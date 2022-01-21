@@ -79,5 +79,3 @@ ticket_office = simpy.Resource(env, capacity=1)
 env.process(passenger_generator(
     env, ticket_office, arrival_rate, service_rate))
 env.run(until=SIMULATION_END_TIME)
-
-print("Maximum number of people in the queue: {}".format(max_in_queue))
