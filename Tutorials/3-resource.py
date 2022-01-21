@@ -1,4 +1,3 @@
-
 import simpy
 import random
 import math
@@ -7,10 +6,11 @@ from sympy import Max
 
 
 def print_stats(resource):
-    ''' Print statistics about the resource'''
+    """ Print statistics about the resource"""
     print(
         "\t[Resource] {} slot using, {} people in queue".format(
-            resource.count, len(resource.queue))
+            resource.count, len(resource.queue)
+        )
     )
     # maximum of max_in_queue and len(resource.queue)
 
@@ -18,8 +18,9 @@ def print_stats(resource):
 # passenger - Entity Process
 # Describe how passenger performs at the ticket office
 
+
 def passenger(env, name, server, service_rate):
-    ''' A passenger process that requests a ticket from the ticket office'''
+    """ A passenger process that requests a ticket from the ticket office"""
 
     print("[{:6.2f}:{}] - arrive at the station".format(env.now, name))
     print_stats(server)
@@ -32,8 +33,7 @@ def passenger(env, name, server, service_rate):
         print_stats(server)
 
         # random service time based on the service rate
-        service_time = random.expovariate(
-            service_rate)  # Generate service time
+        service_time = random.expovariate(service_rate)  # Generate service time
 
         yield env.timeout(service_time)
 
@@ -47,7 +47,7 @@ def passenger(env, name, server, service_rate):
 # generator - Supporting Process
 # Create new passenger and then sleep for random amount of time
 def passenger_generator(env, server, arrival_rate, service_rate):
-    ''' A process that creates new passengers and then sleeps for random amount of time'''
+    """ A process that creates new passengers and then sleeps for random amount of time"""
     i = 0
     while True:
         entity_name = "Passenger#{}".format(i)
@@ -55,7 +55,8 @@ def passenger_generator(env, server, arrival_rate, service_rate):
         env.process(passenger(env, entity_name, server, service_rate))
 
         next_entity_arrival = random.expovariate(
-            arrival_rate)  # Generate next entity arrival
+            arrival_rate
+        )  # Generate next entity arrival
 
         yield env.timeout(next_entity_arrival)
         i += 1
@@ -76,6 +77,5 @@ ticket_office = simpy.Resource(env, capacity=1)
 
 # `simpy.Resource` - Create a resource with a capacity 1 , ie when the resource is full, the next entity will be put in the queue and wait for the resource to become available again
 
-env.process(passenger_generator(
-    env, ticket_office, arrival_rate, service_rate))
+env.process(passenger_generator(env, ticket_office, arrival_rate, service_rate))
 env.run(until=SIMULATION_END_TIME)
