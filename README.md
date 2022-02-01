@@ -6,3 +6,9 @@
 
 - Numpy, Matplotlib
 - Simpy
+- Probability Theory
+- Markov Chains
+- Queues
+- Simulation
+
+Course - Discrete event simulation
