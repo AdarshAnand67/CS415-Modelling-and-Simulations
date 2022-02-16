@@ -13,9 +13,9 @@ def simple_process(env, name, waitfor=50):
 
 
 env = simpy.Environment()  # Creating a simpy environment
-
-proc = env.process(simple_process(env, "First Process"))
-
-proc2 = start_delayed(env, simple_process(env, "Second Process", waitfor=35), 8)
+proc = env.process(simple_process(env, "First Process"))  # Creating a process
+proc2 = start_delayed(
+    env, simple_process(env, "Second Process", waitfor=35), 8
+)  # Creating a process with delayed start
 
 env.run()

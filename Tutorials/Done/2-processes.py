@@ -1,7 +1,6 @@
 import simpy
 import random
 
-
 # entity - Entity Process
 # Describe how entity performs for the entire simulation
 def entity(env, name, waitfor=50):
