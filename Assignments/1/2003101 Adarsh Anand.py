@@ -26,7 +26,7 @@ import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn acs sns
+import seaborn as sns
 import simpy
 
 warnings.filterwarnings("ignore")
@@ -80,7 +80,6 @@ def customer_arrival(env, seats):
         yield env.timeout(inter_arrival_time)
 
 
-#  A process that models the behavior of each customer
 def customer(env, name, seats):
     """ A process that models the behavior of each customer - parameters:
         env: SimPy environment
