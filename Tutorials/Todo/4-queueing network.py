@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-#
-# Simpy Example - Queueing Network
-# for 2110636 Performance Evaluation and Analysis Class
-# Natawut Nupairoj, Chulalongkorn University, Thailand
 import simpy
 import random
 
@@ -98,7 +93,7 @@ arrival_rate = 1 / MEAN_INTER_ARRIVAL_TIME
 to_service_rate = 1 / TO_MEAN_SERVICE_TIME
 ga_service_rate = 1 / GA_MEAN_SERVICE_TIME
 
-env = simpy.Environment()
+env = simpy.Environment()  
 ticket_office = Server(env, "ticket_office", 1, to_service_rate)
 gate = Server(env, "gate", 1, ga_service_rate)
 env.process(passenger_generator(env, ticket_office, gate, arrival_rate))

@@ -1,4 +1,4 @@
-    # Generator function
+# Generator function
 
 
 def my_generator(n):

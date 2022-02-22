@@ -1,13 +1,16 @@
-import simpy
 import random
+
+import simpy
+
 
 # entity - Entity Process
 # Describe how entity performs for the entire simulation
 def entity(env, name, waitfor=50):
     """ An entity process that waits for a given amount of time and then prints"""
-    print("[{:6.2f}:{}] - begin process".format(env.now, name))
+    
+    print(f"[{env.now:6.2f}:{name}] - begin process")
     yield env.timeout(waitfor)
-    print("[{:6.2f}:{}] - end process".format(env.now, name))
+    print(f"[{env.now:6.2f}:{name}] - end process")
 
 
 # generator - Supporting Process
@@ -20,25 +23,22 @@ def generator(env, arrival_rate):
     while True:
         entity_name = "Entity #{}".format(i)
 
-        print("[{:6.2f}:Generator] Generate {}".format(env.now, entity_name))
+        print(f"[{env.now:6.2f}:Generator] Generate {entity_name}")
 
-        env.process(entity(env, entity_name))  # Run entity process in env
+        time = random.expovariate(10) # Generate random time for entity to wait
+        env.process(entity(env, entity_name,time))  # Run entity process in env
 
         next_entity_arrival = random.expovariate(
             arrival_rate
-        )  # Generate next entity arrival
+        )  # Generate next entity arrival, lambda = 1/mean = 0.5
         next_entity_arrival = round(next_entity_arrival, 2)
 
-        print(
-            "[{:6.2f}:Generator] next generation is {} seconds away".format(
-                env.now, next_entity_arrival
-            )
-        )
+        print(f"[{env.now:6.2f}:Generator] Sleep for {next_entity_arrival}")
 
         yield env.timeout(next_entity_arrival)
         i += 1
 
 
-env = simpy.Environment()
-env.process(generator(env, 0.5))
+env = simpy.Environment() # Creating a simpy environment
+env.process(generator(env, 0.5)) # Creating a process
 env.run(until=100)
