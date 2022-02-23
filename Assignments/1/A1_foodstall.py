@@ -54,7 +54,7 @@ num_customers_backed_out = 0
 
 
 def customer(env, name, seats):
-    ''' A process that models the behavior of each customer'''
+    """ A process that models the behavior of each customer"""
     global num_customers, num_customers_served, num_customers_backed_out
 
     # If there's a vacant seat...
@@ -66,18 +66,18 @@ def customer(env, name, seats):
         )
 
         # occupy a seat for some time
-        my_seat = seats.request() # Request a seat
-        yield my_seat 
-        
+        my_seat = seats.request()  # Request a seat
+        yield my_seat
+
         occupancy_time = random.uniform(
             SEAT_OCCUPANCY_TIME_MIN, SEAT_OCCUPANCY_TIME_MAX
         )
-        
+
         yield env.timeout(occupancy_time)
-        
+
         # release the seat
         seats.release(my_seat)
-        
+
         print("SIM_TIME=%5.2f Customer %d left the stall. " % (env.now, name))
         num_customers += 1
         num_customers_served += 1
@@ -93,7 +93,7 @@ def customer(env, name, seats):
 
 
 def customer_arrival(env, seats):
-    ''' A process that models the arrival of customers'''
+    """ A process that models the arrival of customers"""
     count = 0
     while True:
         count += 1
@@ -106,8 +106,7 @@ def customer_arrival(env, seats):
         if (
             env.now < 1 * 60 or env.now > 5 * 60
         ):  # If it is between 8am-9am or after 1pm
-            inter_arrival_time = random.uniform(
-                RUSH_HOUR_T_MIN, RUSH_HOUR_T_MAX)
+            inter_arrival_time = random.uniform(RUSH_HOUR_T_MIN, RUSH_HOUR_T_MAX)
         else:  # If it is after 10 am
             inter_arrival_time = random.uniform(
                 NON_RUSH_HOUR_T_MIN, NON_RUSH_HOUR_T_MAX

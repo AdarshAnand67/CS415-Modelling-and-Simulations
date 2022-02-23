@@ -1,8 +1,8 @@
-''' Library imports '''
+""" Library imports """
 import random
 import simpy
 
-'''Defining the constants'''
+"""Defining the constants"""
 
 # Unit of time = minutes
 
@@ -96,8 +96,7 @@ class Student:
         self.REQD_WORK = random.randint(4 * 60, 5 * 60)
         self.env = env  # environment
         self.id = id  # student id (unique)
-        self.behavior_process = env.process(
-            self.behavior())  # student behavior
+        self.behavior_process = env.process(self.behavior())  # student behavior
         self.SLEEP_PROBABILITY = SLEEP_PROBABILITY  # probability of falling asleep
 
     def behavior(self):
@@ -124,11 +123,9 @@ class Student:
             if timeout_event in ret:  # Student completes the work
                 COUNTER_STUDENT_ENVIRONMENT += 1
                 NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT += 1
-                print(
-                    f"TIME={self.env.now} - 🥳 Student #{self.id} finished working.")
+                print(f"TIME={self.env.now} - 🥳 Student #{self.id} finished working.")
 
-                TIME_TAKEN_TO_SUBMIT.append(
-                    self.env.now)  # Time taken to submit
+                TIME_TAKEN_TO_SUBMIT.append(self.env.now)  # Time taken to submit
 
                 if COUNTER_STUDENT_ENVIRONMENT == NUMBER_OF_STUDENTS:
                     # If all students finished the assignment on time
@@ -138,7 +135,7 @@ class Student:
 
             else:  # Power cut event
                 # deduct the time taken by the student to complete the work
-                self.REQD_WORK -= (self.env.now - START_TIME)
+                self.REQD_WORK -= self.env.now - START_TIME
 
                 print(
                     f"TIME={self.env.now} - 😓 Student #{self.id} interrupted by power cut. Task remaining={self.REQD_WORK} minutes"
@@ -168,7 +165,7 @@ class Student:
                     )
 
 
-''' Main simpy function code '''
+""" Main simpy function code """
 env = simpy.Environment()  # create the environment
 
 # Event that is triggered when power is cut
@@ -190,27 +187,29 @@ TIME_OVER = env.process(timeduration(env))  # time duration process
 
 # run the simulation until all students finished the assignment or time duration is over
 env.run(until=ALL_FINISHED | TIME_OVER)
-NUMBER_OF_STUDENTS_SLEPT = NUMBER_OF_STUDENTS - \
-    NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT
+NUMBER_OF_STUDENTS_SLEPT = NUMBER_OF_STUDENTS - NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT
 
-print('\n')
+print("\n")
 
-'''Summary of the simulation'''
+"""Summary of the simulation"""
 
 dict = {
     "Number of students who finished assignment on time 🥳": NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT,
     "Number of students who Slept😴": NUMBER_OF_STUDENTS_SLEPT,
     "Number of students👦": NUMBER_OF_STUDENTS,
-    "Percentage of students who finished assignment on time (in %)": (NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT / NUMBER_OF_STUDENTS)*100,
+    "Percentage of students who finished assignment on time (in %)": (
+        NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT / NUMBER_OF_STUDENTS
+    )
+    * 100,
     "Average time to finish assignment": Average(TIME_TAKEN_TO_SUBMIT),
     "Number of power cuts🌑🌕": NUMBER_OF_POWER_CUTS,
 }
 
-print('-----------------------------------------------------------------------------')
-print('{:<20} {:<20} {:<20}'.format(" ", "📊Summary of the simulation📊", " "))
-print('-----------------------------------------------------------------------------')
+print("-----------------------------------------------------------------------------")
+print("{:<20} {:<20} {:<20}".format(" ", "📊Summary of the simulation📊", " "))
+print("-----------------------------------------------------------------------------")
 
 for key, value in dict.items():
     print(f"{key:<{70}}{value}")
 
-print('-----------------------------------------------------------------------------')
+print("-----------------------------------------------------------------------------")

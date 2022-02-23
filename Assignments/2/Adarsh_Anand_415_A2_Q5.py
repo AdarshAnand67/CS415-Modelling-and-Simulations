@@ -1,11 +1,11 @@
-''' Library imports '''
+""" Library imports """
 import random
 
 import matplotlib.pyplot as plt
 import numpy as np
 import simpy
 
-'''Defining the constants'''
+"""Defining the constants"""
 
 # Unit of time = minutes
 
@@ -94,8 +94,7 @@ class Student:
         self.REQD_WORK = random.randint(4 * 60, 5 * 60)
         self.env = env  # environment
         self.id = id  # student id (unique)
-        self.behavior_process = env.process(
-            self.behavior())  # student behavior
+        self.behavior_process = env.process(self.behavior())  # student behavior
         self.SLEEP_PROBABILITY = SLEEP_PROBABILITY  # probability of falling asleep
 
     def behavior(self):
@@ -116,20 +115,18 @@ class Student:
 
             # Student completes the work
             timeout_event = env.timeout(self.REQD_WORK)
-            
+
             # wait for completing assignment event or power down event
             ret = yield timeout_event | POWER_DOWN_EVENT
 
             if timeout_event in ret:  # Student completes the work
-                
+
                 COUNTER_STUDENT_ENVIRONMENT += 1
                 NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT += 1
-                
-                print(
-                    f"TIME={self.env.now} - 🥳 Student #{self.id} finished working.")
 
-                TIME_TAKEN_TO_SUBMIT.append(
-                    self.env.now)  # Time taken to submit
+                print(f"TIME={self.env.now} - 🥳 Student #{self.id} finished working.")
+
+                TIME_TAKEN_TO_SUBMIT.append(self.env.now)  # Time taken to submit
 
                 if COUNTER_STUDENT_ENVIRONMENT == NUMBER_OF_STUDENTS:
                     # If all students finished the assignment on time
@@ -137,24 +134,27 @@ class Student:
 
                 return
 
-            else: 
+            else:
                 # deduct the time taken by the student to complete the work
-                self.REQD_WORK -= (self.env.now - START_TIME)
+                self.REQD_WORK -= self.env.now - START_TIME
 
                 print(
                     f"TIME={self.env.now} - 😓 Student #{self.id} interrupted by power cut. Task remaining={self.REQD_WORK} minutes"
                 )  # print the time when the student is interrupted
-                
+
                 yield POWER_DOWN_EVENT  # wait for power to come back
 
-                ''' Coffee break '''
-                if(random.uniform(0,1)<=self.SLEEP_PROBABILITY):    
-                    print(f"TIME={self.env.now} - 🍵 Student #{self.id} is having coffee.Task remaining={self.REQD_WORK} minutes")
-                    
+                """ Coffee break """
+                if random.uniform(0, 1) <= self.SLEEP_PROBABILITY:
+                    print(
+                        f"TIME={self.env.now} - 🍵 Student #{self.id} is having coffee.Task remaining={self.REQD_WORK} minutes"
+                    )
+
                     yield env.timeout(30)
-                    
-                    print(f"TIME={self.env.now} - Student #{self.id} finished having coffee.Task remaining={self.REQD_WORK} minutes")
-                
+
+                    print(
+                        f"TIME={self.env.now} - Student #{self.id} finished having coffee.Task remaining={self.REQD_WORK} minutes"
+                    )
 
                 # if random.uniform(0, 1) <= self.SLEEP_PROBABILITY:
                 #     # if the student falls asleep
@@ -178,7 +178,7 @@ class Student:
                 #     )
 
 
-''' Main simpy function code '''
+""" Main simpy function code """
 Student_process = []  # list of student processes
 
 N = []  # list of number of students who finished assignment
@@ -186,7 +186,7 @@ RANGE_OF_PROBABILITY = []  # list of range of probability of sleeping
 SLEEP_PROBABILITY = 0.00  # Probability of a student sleeping
 
 for p in range(99):
-    SLEEP_PROBABILITY+=0.01
+    SLEEP_PROBABILITY += 0.01
     NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT = 0
 
     env = simpy.Environment()  # create the environment
@@ -196,10 +196,8 @@ for p in range(99):
     # Event that is triggered when power is back on
     POWER_UP_EVENT = simpy.Event(env)
 
-    Power_Toggle_process = env.process(
-        Power_Toggle(env))  # power toggle process
-    timeduration_process = env.process(
-        timeduration(env))  # timeduration process
+    Power_Toggle_process = env.process(Power_Toggle(env))  # power toggle process
+    timeduration_process = env.process(timeduration(env))  # timeduration process
 
     for id in range(NUMBER_OF_STUDENTS):
         Student_obj = Student(env, id, SLEEP_PROBABILITY)
@@ -211,51 +209,63 @@ for p in range(99):
 
     # run the simulation until all students finished the assignment or time duration is over
     env.run(until=ALL_FINISHED | TIME_OVER)
-    NUMBER_OF_STUDENTS_SLEPT = NUMBER_OF_STUDENTS - \
-        NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT
+    NUMBER_OF_STUDENTS_SLEPT = (
+        NUMBER_OF_STUDENTS - NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT
+    )
 
     N.append(NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT)
     RANGE_OF_PROBABILITY.append(SLEEP_PROBABILITY)
 
-    print('\n')
+    print("\n")
 
-    '''Summary of the simulation'''
+    """Summary of the simulation"""
 
     dict = {
         "Number of students who finished assignment on time 🥳": NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT,
         "Number of students who Slept😴": NUMBER_OF_STUDENTS_SLEPT,
         "Number of students👦": NUMBER_OF_STUDENTS,
-        "Percentage of students who finished assignment on time (in %)": (NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT / NUMBER_OF_STUDENTS)*100,
+        "Percentage of students who finished assignment on time (in %)": (
+            NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT / NUMBER_OF_STUDENTS
+        )
+        * 100,
         "Average time to finish assignment": Average(TIME_TAKEN_TO_SUBMIT),
         "Number of power cuts🌑🌕": NUMBER_OF_POWER_CUTS,
     }
 
-    print('-----------------------------------------------------------------------------')
-    print('{:<20} {:<20} {:<20}'.format(
-        " ", "📊Summary of the simulation📊", " "))
-    print('-----------------------------------------------------------------------------')
+    print(
+        "-----------------------------------------------------------------------------"
+    )
+    print("{:<20} {:<20} {:<20}".format(" ", "📊Summary of the simulation📊", " "))
+    print(
+        "-----------------------------------------------------------------------------"
+    )
 
     for key, value in dict.items():
         print(f"{key:<{70}}{value}")
 
-    print('-----------------------------------------------------------------------------')
+    print(
+        "-----------------------------------------------------------------------------"
+    )
 
 print(N)
 print(RANGE_OF_PROBABILITY)
-print('-----------------------------------------------------------------------------')
-print("Average number of students who finished assignment on time 🥳 (100 iterations):", Average(N))
+print("-----------------------------------------------------------------------------")
+print(
+    "Average number of students who finished assignment on time 🥳 (100 iterations):",
+    Average(N),
+)
 
 
-''' Plotting the graph '''
+""" Plotting the graph """
 plt.figure(figsize=(8, 8))
-plt.plot(RANGE_OF_PROBABILITY, N,marker='o', linestyle='--', color='green')
+plt.plot(RANGE_OF_PROBABILITY, N, marker="o", linestyle="--", color="green")
 plt.title("Number of students who finished assignment on time  vs. Sleep Probability")
 plt.xlabel("Sleep Probability")
 plt.ylabel("Number of students who finished assignment on time ")
 plt.xlim(0, 1)
 plt.xticks(np.arange(0, 1.1, 0.1))
 plt.yticks(range(0, 11, 1))
-plt.ylim(-1, NUMBER_OF_STUDENTS+1)
+plt.ylim(-1, NUMBER_OF_STUDENTS + 1)
 plt.grid()
 plt.show()
-plt.imsave('plot.png')
+plt.imsave("plot.png")

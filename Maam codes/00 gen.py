@@ -2,9 +2,9 @@
 
 
 def my_generator(n):
-    yield 1+n
-    yield 2+n
-    yield 3+n
+    yield 1 + n
+    yield 2 + n
+    yield 3 + n
     return
 
 

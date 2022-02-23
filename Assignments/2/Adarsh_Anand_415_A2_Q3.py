@@ -1,9 +1,9 @@
-''' Library imports '''
+""" Library imports """
 import random
 
 import simpy
 
-'''Defining the constants'''
+"""Defining the constants"""
 
 # Unit of time = minutes
 
@@ -94,8 +94,7 @@ class Student:
         self.REQD_WORK = random.randint(4 * 60, 5 * 60)
         self.env = env  # environment
         self.id = id  # student id (unique)
-        self.behavior_process = env.process(
-            self.behavior())  # student behavior
+        self.behavior_process = env.process(self.behavior())  # student behavior
         self.SLEEP_PROBABILITY = SLEEP_PROBABILITY  # probability of falling asleep
 
     def behavior(self):
@@ -122,11 +121,9 @@ class Student:
             if timeout_event in ret:  # Student completes the work
                 COUNTER_STUDENT_ENVIRONMENT += 1
                 NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT += 1
-                print(
-                    f"TIME={self.env.now} - 🥳 Student #{self.id} finished working.")
+                print(f"TIME={self.env.now} - 🥳 Student #{self.id} finished working.")
 
-                TIME_TAKEN_TO_SUBMIT.append(
-                    self.env.now)  # Time taken to submit
+                TIME_TAKEN_TO_SUBMIT.append(self.env.now)  # Time taken to submit
 
                 if COUNTER_STUDENT_ENVIRONMENT == NUMBER_OF_STUDENTS:
                     # If all students finished the assignment on time
@@ -136,7 +133,7 @@ class Student:
 
             else:  # Power cut event
                 # deduct the time taken by the student to complete the work
-                self.REQD_WORK -= (self.env.now - START_TIME)
+                self.REQD_WORK -= self.env.now - START_TIME
 
                 print(
                     f"TIME={self.env.now} - 😓 Student #{self.id} interrupted by power cut. Task remaining={self.REQD_WORK} minutes"
@@ -166,13 +163,15 @@ class Student:
                     )
 
 
-''' Main simpy function code '''
+""" Main simpy function code """
 Student_process = []  # list of student processes
 
 N = []  # list of number of students who finished assignment
 NUMBER_OF_ITERATIONS = 100  # number of iterations
 for _ in range(NUMBER_OF_ITERATIONS):
-    NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT = 0  # Number of students who finished assignment
+    NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT = (
+        0  # Number of students who finished assignment
+    )
     env = simpy.Environment()  # create the environment
 
     # Event that is triggered when power is cut
@@ -180,10 +179,8 @@ for _ in range(NUMBER_OF_ITERATIONS):
     # Event that is triggered when power is back on
     POWER_UP_EVENT = simpy.Event(env)
 
-    Power_Toggle_process = env.process(
-        Power_Toggle(env))  # power toggle process
-    timeduration_process = env.process(
-        timeduration(env))  # timeduration process
+    Power_Toggle_process = env.process(Power_Toggle(env))  # power toggle process
+    timeduration_process = env.process(timeduration(env))  # timeduration process
 
     for id in range(NUMBER_OF_STUDENTS):
         Student_obj = Student(env, id, SLEEP_PROBABILITY)
@@ -195,36 +192,42 @@ for _ in range(NUMBER_OF_ITERATIONS):
 
     # run the simulation until all students finished the assignment or time duration is over
     env.run(until=ALL_FINISHED | TIME_OVER)
-    NUMBER_OF_STUDENTS_SLEPT = NUMBER_OF_STUDENTS - \
-        NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT
+    NUMBER_OF_STUDENTS_SLEPT = (
+        NUMBER_OF_STUDENTS - NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT
+    )
 
     N.append(NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT)
 
-    print('\n')
+    print("\n")
 
-'''Summary of the simulation run 100 times'''
+"""Summary of the simulation run 100 times"""
 
 dict = {
     "Number of students who finished assignment on time 🥳": sum(N),
-    "Number of students who Slept😴": NUMBER_OF_ITERATIONS*10 - sum(N),
-    "Number of students👦": NUMBER_OF_STUDENTS*NUMBER_OF_ITERATIONS,
-    "Percentage of students who finished assignment on time (in %)": (sum(N) / (NUMBER_OF_STUDENTS*NUMBER_OF_ITERATIONS))*100,
+    "Number of students who Slept😴": NUMBER_OF_ITERATIONS * 10 - sum(N),
+    "Number of students👦": NUMBER_OF_STUDENTS * NUMBER_OF_ITERATIONS,
+    "Percentage of students who finished assignment on time (in %)": (
+        sum(N) / (NUMBER_OF_STUDENTS * NUMBER_OF_ITERATIONS)
+    )
+    * 100,
     "Average time to finish assignment": Average(TIME_TAKEN_TO_SUBMIT),
     "Number of power cuts🌑🌕": NUMBER_OF_POWER_CUTS,
 }
 
-print('-----------------------------------------------------------------------------')
-print('{:<20} {:<20} {:<20}'.format(
-    " ", "📊Summary of the simulation 100 times📊", " "))
-print('-----------------------------------------------------------------------------')
+print("-----------------------------------------------------------------------------")
+print("{:<20} {:<20} {:<20}".format(" ", "📊Summary of the simulation 100 times📊", " "))
+print("-----------------------------------------------------------------------------")
 
 for key, value in dict.items():
     print(f"{key:<{70}}{value}")
 
-print('-----------------------------------------------------------------------------')
+print("-----------------------------------------------------------------------------")
 
 print(f"List of number of students who finished assignment on time")
 print(N)
-print('-----------------------------------------------------------------------------')
-print("Average number of students who finished assignment on time 🥳 (NUMBER_OF_ITERATIONS iterations):", Average(N))
-print('-----------------------------------------------------------------------------')
+print("-----------------------------------------------------------------------------")
+print(
+    "Average number of students who finished assignment on time 🥳 (NUMBER_OF_ITERATIONS iterations):",
+    Average(N),
+)
+print("-----------------------------------------------------------------------------")
