@@ -1,7 +1,8 @@
 ''' Library imports '''
 import random
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 import simpy
 
 '''Defining the constants'''
@@ -234,14 +235,14 @@ print("Average number of students who finished assignment on time 🥳 (100 iter
 
 
 ''' Plotting the graph '''
-plt.figure(figsize=(10, 10))
+plt.figure(figsize=(8, 8))
 plt.plot(RANGE_OF_PROBABILITY, N,marker='o', linestyle='--', color='green')
 plt.title("Number of students who finished assignment on time  vs. Sleep Probability")
 plt.xlabel("Sleep Probability")
 plt.ylabel("Number of students who finished assignment on time ")
 plt.xlim(0, 1)
-plt.xticks(np.arange(0, 1, 0.1))
-plt.yticks(range(0, 10, 1))
+plt.xticks(np.arange(0, 1.1, 0.1))
+plt.yticks(range(0, 11, 1))
 plt.ylim(-1, NUMBER_OF_STUDENTS+1)
 plt.grid()
 plt.show()

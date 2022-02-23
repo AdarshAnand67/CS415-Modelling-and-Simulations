@@ -1,6 +1,8 @@
 ''' Library imports '''
 import random
 
+import matplotlib.pyplot as plt
+import numpy as np
 import simpy
 
 '''Defining the constants'''
@@ -9,8 +11,6 @@ import simpy
 
 NUMBER_OF_STUDENTS = 10  # Number of students in the simulation
 TIME_FOR_SUBMISSION = 7 * 60  # Time for submission in minutes for each student
-
-SLEEP_PROBABILITY = 0.4  # Probability of a student sleeping
 
 # Number of students who finished assignment
 NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT = 0
@@ -170,10 +170,13 @@ class Student:
 Student_process = []  # list of student processes
 
 N = []  # list of number of students who finished assignment
+RANGE_OF_PROBABILITY = []  # list of range of probability of sleeping
+SLEEP_PROBABILITY = 0.00  # Probability of a student sleeping
 
-for _ in range(100):
-    NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT=0
-    
+for p in range(99):
+    SLEEP_PROBABILITY+=0.01
+    NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT = 0
+
     env = simpy.Environment()  # create the environment
 
     # Event that is triggered when power is cut
@@ -200,6 +203,7 @@ for _ in range(100):
         NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT
 
     N.append(NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT)
+    RANGE_OF_PROBABILITY.append(SLEEP_PROBABILITY)
 
     print('\n')
 
@@ -225,5 +229,20 @@ for _ in range(100):
     print('-----------------------------------------------------------------------------')
 
 print(N)
+print(RANGE_OF_PROBABILITY)
 print('-----------------------------------------------------------------------------')
 print("Average number of students who finished assignment on time 🥳 (100 iterations):", Average(N))
+
+
+''' Plotting the graph '''
+plt.figure(figsize=(8, 8))
+plt.plot(RANGE_OF_PROBABILITY, N,marker='o', linestyle='--', color='green')
+plt.title("Number of students who finished assignment on time  vs. Sleep Probability")
+plt.xlabel("Sleep Probability")
+plt.ylabel("Number of students who finished assignment on time ")
+plt.xlim(0, 1)
+plt.xticks(np.arange(0, 1.1, 0.1))
+plt.yticks(range(0, 11, 1))
+plt.ylim(-1, NUMBER_OF_STUDENTS+1)
+plt.grid()
+plt.show()
