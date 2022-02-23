@@ -11,6 +11,8 @@
 - Queues
 - Simulation
 
+---
+
 Course - Discrete event simulation
 
 Firstname_Secondname_coursecode_A2_report.pdf
