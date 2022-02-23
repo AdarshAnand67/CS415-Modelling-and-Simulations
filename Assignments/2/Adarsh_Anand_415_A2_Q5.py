@@ -116,12 +116,15 @@ class Student:
 
             # Student completes the work
             timeout_event = env.timeout(self.REQD_WORK)
+            
             # wait for completing assignment event or power down event
             ret = yield timeout_event | POWER_DOWN_EVENT
 
             if timeout_event in ret:  # Student completes the work
+                
                 COUNTER_STUDENT_ENVIRONMENT += 1
                 NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT += 1
+                
                 print(
                     f"TIME={self.env.now} - 🥳 Student #{self.id} finished working.")
 
@@ -134,36 +137,45 @@ class Student:
 
                 return
 
-            else:  # Power cut event
+            else: 
                 # deduct the time taken by the student to complete the work
                 self.REQD_WORK -= (self.env.now - START_TIME)
 
                 print(
                     f"TIME={self.env.now} - 😓 Student #{self.id} interrupted by power cut. Task remaining={self.REQD_WORK} minutes"
                 )  # print the time when the student is interrupted
-
+                
                 yield POWER_DOWN_EVENT  # wait for power to come back
 
-                if random.uniform(0, 1) <= self.SLEEP_PROBABILITY:
-                    # if the student falls asleep
-                    COUNTER_STUDENT_ENVIRONMENT += 1
-                    # wait for 5 minutes for power to come back
-                    yield env.timeout(5)
+                ''' Coffee break '''
+                if(random.uniform(0,1)<=self.SLEEP_PROBABILITY):    
+                    print(f"TIME={self.env.now} - 🍵 Student #{self.id} is having coffee.Task remaining={self.REQD_WORK} minutes")
+                    
+                    yield env.timeout(30)
+                    
+                    print(f"TIME={self.env.now} - Student #{self.id} finished having coffee.Task remaining={self.REQD_WORK} minutes")
+                
 
-                    print(
-                        f"TIME={self.env.now} - 😴 Student #{self.id} slept. Assignment pending. Work left was={self.REQD_WORK} minutes"
-                    )
+                # if random.uniform(0, 1) <= self.SLEEP_PROBABILITY:
+                #     # if the student falls asleep
+                #     COUNTER_STUDENT_ENVIRONMENT += 1
+                #     # wait for 5 minutes for power to come back
+                #     yield env.timeout(5)
 
-                    if COUNTER_STUDENT_ENVIRONMENT == NUMBER_OF_STUDENTS:
-                        ALL_FINISHED.succeed()  # If all students finished the assignment on time
-                    return
+                #     print(
+                #         f"TIME={self.env.now} - 😴 Student #{self.id} slept. Assignment pending. Work left was={self.REQD_WORK} minutes"
+                #     )
 
-                else:
-                    # if the student wakes up ans resumes working
-                    yield POWER_UP_EVENT
-                    print(
-                        f"TIME={self.env.now} - 😃 Student #{self.id} resumes working. Work left to do={self.REQD_WORK} minutes"
-                    )
+                #     if COUNTER_STUDENT_ENVIRONMENT == NUMBER_OF_STUDENTS:
+                #         ALL_FINISHED.succeed()  # If all students finished the assignment on time
+                #     return
+
+                # else:
+                #     # if the student wakes up ans resumes working
+                #     yield POWER_UP_EVENT
+                #     print(
+                #         f"TIME={self.env.now} - 😃 Student #{self.id} resumes working. Work left to do={self.REQD_WORK} minutes"
+                #     )
 
 
 ''' Main simpy function code '''
@@ -246,3 +258,4 @@ plt.yticks(range(0, 11, 1))
 plt.ylim(-1, NUMBER_OF_STUDENTS+1)
 plt.grid()
 plt.show()
+plt.imsave('plot.png')
