@@ -1,7 +1,8 @@
 import simpy
 
 # Discrete Event Simulation
-env = simpy.Environment()
+# env = simpy.Environment()
+env = simpy.rt.RealtimeEnvironment(factor=1, strict=True) # Create a real-time environment with a factor of 1 and strict=False
 
 
 def traffic_light(env):

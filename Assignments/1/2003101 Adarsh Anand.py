@@ -82,6 +82,7 @@ def customer_arrival(env, seats):
 
 def customer(env, name, seats):
     """ A process that models the behavior of each customer - parameters:
+    
         env: SimPy environment
         name: name of the customer
         seats: SimPy resource
@@ -96,14 +97,20 @@ def customer(env, name, seats):
             "Customer occupied one seat.",
         )
         # occupy a seat for some time
-        my_seat = seats.request()
-        yield my_seat
-        occupancy_time = random.uniform(
-            SEAT_OCCUPANCY_TIME_MIN, SEAT_OCCUPANCY_TIME_MAX
-        )
-        yield env.timeout(occupancy_time)
-        # release the seat
-        seats.release(my_seat)
+        # my_seat = seats.request()
+        # yield my_seat
+        # occupancy_time = random.uniform(
+        #     SEAT_OCCUPANCY_TIME_MIN, SEAT_OCCUPANCY_TIME_MAX
+        # )
+        # yield env.timeout(occupancy_time)
+        # # release the seat
+        # seats.release(my_seat)
+        with seats.request() as my_seat:
+            yield my_seat
+            occupancy_time = random.uniform(
+                SEAT_OCCUPANCY_TIME_MIN, SEAT_OCCUPANCY_TIME_MAX
+            )
+            yield env.timeout(occupancy_time)
 
         print(
             "SIM_TIME=%5.2f Customer %d left the stall after eating. " % (env.now, name)

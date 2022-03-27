@@ -1,9 +1,10 @@
-import simpy
 import random
 
+import simpy
 
 # Generic helper class to hold information regarding to resource
 # This simplifies how we pass information from main program to entity process
+
 class Server(object):
     def __init__(self, env, name, capacity, service_rate):
         self.name = name
@@ -94,7 +95,9 @@ to_service_rate = 1 / TO_MEAN_SERVICE_TIME
 ga_service_rate = 1 / GA_MEAN_SERVICE_TIME
 
 env = simpy.Environment()
+
 ticket_office = Server(env, "ticket_office", 1, to_service_rate)
 gate = Server(env, "gate", 1, ga_service_rate)
+
 env.process(passenger_generator(env, ticket_office, gate, arrival_rate))
 env.run(until=SIMULATION_END_TIME)

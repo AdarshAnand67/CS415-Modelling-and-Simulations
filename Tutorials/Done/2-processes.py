@@ -1,10 +1,10 @@
 import random
-
 import simpy
-
 
 # entity - Entity Process
 # Describe how entity performs for the entire simulation
+
+
 def entity(env, name, waitfor=50):
     """ An entity process that waits for a given amount of time and then prints"""
 
@@ -31,6 +31,7 @@ def generator(env, arrival_rate):
         next_entity_arrival = random.expovariate(
             arrival_rate
         )  # Generate next entity arrival, lambda = 1/mean = 0.5
+
         next_entity_arrival = round(next_entity_arrival, 2)
 
         print(f"[{env.now:6.2f}:Generator] Sleep for {next_entity_arrival}")
@@ -41,4 +42,4 @@ def generator(env, arrival_rate):
 
 env = simpy.Environment()  # Creating a simpy environment
 env.process(generator(env, 0.5))  # Creating a process
-env.run(until=100)
+env.run(until=100)  # Run until 100 seconds

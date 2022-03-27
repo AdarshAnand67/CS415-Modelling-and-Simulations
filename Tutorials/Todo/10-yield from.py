@@ -1,10 +1,6 @@
-#!/usr/bin/env python
-#
-# Simpy Example - Using yield from to organize code
-# for 2110636 Performance Evaluation and Analysis Class
-# Natawut Nupairoj, Chulalongkorn University, Thailand
-import simpy
 import random
+
+import simpy
 
 
 # Helper class to

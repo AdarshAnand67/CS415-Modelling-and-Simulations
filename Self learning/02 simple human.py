@@ -18,16 +18,16 @@ def person(env, name, work, eat, sleep):
         req = couch.request()  # wait until the couch is available
         yield req
 
-        print(
-            "Time = ",
-            env.now,
-            "Person",
-            name,
-            " has occupied the couch and is sleeping",
-        )
+        print_stats(couch)
         yield env.timeout(sleep)
         couch.release(req)
 
+def print_stats(res):
+    ''' Print statistics of the resource '''
+    # res.count
+    print(f"\t{res.count} / {res.capacity} of seats are allocated")
+    print(f"\t{len(res.users)} people are using the couch")
+    print(f"\tQueue length: {len(res.queue)}")
 
 env = simpy.Environment()  # create the environment
 couch = simpy.Resource(
@@ -35,5 +35,7 @@ couch = simpy.Resource(
 )  # create the shared resource with a capacity of 1
 
 A = env.process(person(env, name="A", work=10, eat=4, sleep=10))
-# B = env.process(person(env, name="B", work=4, eat=6, sleep=11))
+B = env.process(person(env, name="B", work=4, eat=6, sleep=11))
+B = env.process(person(env, name="B", work=4, eat=6, sleep=11))
+B = env.process(person(env, name="B", work=4, eat=6, sleep=11))
 env.run(until=50)
