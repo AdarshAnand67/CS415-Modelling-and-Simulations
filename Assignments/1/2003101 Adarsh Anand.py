@@ -82,7 +82,7 @@ def customer_arrival(env, seats):
 
 def customer(env, name, seats):
     """ A process that models the behavior of each customer - parameters:
-    
+
         env: SimPy environment
         name: name of the customer
         seats: SimPy resource
@@ -246,7 +246,7 @@ print(
 print("Optimal number of seats =", seats)
 
 #! 3.
-# Modify the behaviour of each customer such that whenever a customer arrives to find all the
+# Modify the Behaviour of each customer such that whenever a customer arrives to find all the
 # seats occupied, he/she waits for at-most 5 minutes for a seat to become empty. If a seat becomes
 # empty within this time, the waiting customer immediately occupies the seat. Else, the customer
 # leaves the restaurant after waiting for 5 minutes. With such a modification, what is the optimal
@@ -499,6 +499,8 @@ print("Optimal number of seats =", seats)
 # Demonstrate and quantify this using simulations.
 
 #  A process that models the arrival of customers
+
+
 def customer_arrival_modified_patience(env, seats, patience):
     """ A process that models the arrival of customers (modified)"""
     count = 0
@@ -623,7 +625,8 @@ for patience in range(1, 51):
         # Create a SimPy environment and populate it with processes and resources
         env = simpy.Environment()  # create an environment
         # create a resource to model seats
-        seats = simpy.Resource(env, capacity=6)  # create a resource with 6 seats
+        # create a resource with 6 seats
+        seats = simpy.Resource(env, capacity=6)
         # create a process to model customer arrivals.
         env.process(customer_arrival_modified_patience(env, seats, patience))
 

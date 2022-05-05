@@ -28,9 +28,9 @@ class Server(object):
         return random.expovariate(self.service_rate)
 
 
-# passenger - Entity Process
-# Describe how passenger performs at the ticket office
-def passenger(env, name, server):
+# Passenger - Entity Process
+# Describe how Passenger performs at the ticket office
+def Passenger(env, name, server):
     print("[{:6.2f}:{}] - arrive at the station".format(env.now, name))
     with server.resource.request() as request:
         yield request
@@ -43,12 +43,12 @@ def passenger(env, name, server):
 
 
 # generator - Supporting Process
-# Create new passenger and then sleep for random amount of time
-def passenger_generator(env, server, arrival_rate):
+# Create new Passenger and then sleep for random amount of time
+def Passenger_generator(env, server, arrival_rate):
     i = 0
     while True:
         ename = "Passenger#{}".format(i)
-        env.process(passenger(env, ename, server))
+        env.process(Passenger(env, ename, server))
         next_entity_arrival = random.expovariate(arrival_rate)
         yield env.timeout(next_entity_arrival)
         i += 1
@@ -68,7 +68,7 @@ def model(seed=0):
     random.seed(seed)
     env = simpy.Environment()
     ticket_office = Server(env, "office", capacity=1, service_rate=service_rate)
-    env.process(passenger_generator(env, ticket_office, arrival_rate))
+    env.process(Passenger_generator(env, ticket_office, arrival_rate))
     env.run(until=SIMULATION_END_TIME)
     print("------------------")
 

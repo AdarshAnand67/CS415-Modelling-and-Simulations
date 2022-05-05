@@ -39,11 +39,11 @@ def find_shortest_queues(servers):
     return min_s, min_n
 
 
-# passenger - Entity Process
-# Describe how passenger performs at the ticket office
-def passenger(env, name, servers):
+# Passenger - Entity Process
+# Describe how Passenger performs at the ticket office
+def Passenger(env, name, servers):
     print("[{:6.2f}:{}] - arrive at the station".format(env.now, name))
-    # passenger will choose a server with the shorest queue
+    # Passenger will choose a server with the shorest queue
     server, num_in_server = find_shortest_queues(servers)
     for s in servers:
         s.print_stats()
@@ -63,12 +63,12 @@ def passenger(env, name, servers):
 
 
 # generator - Supporting Process
-# Create new passenger and then sleep for random amount of time
-def passenger_generator(env, servers, arrival_rate):
+# Create new Passenger and then sleep for random amount of time
+def Passenger_generator(env, servers, arrival_rate):
     i = 0
     while True:
         ename = "Passenger#{}".format(i)
-        env.process(passenger(env, ename, servers))
+        env.process(Passenger(env, ename, servers))
         next_entity_arrival = random.expovariate(arrival_rate)
         yield env.timeout(next_entity_arrival)
         i += 1
@@ -86,5 +86,5 @@ env = simpy.Environment()
 ticket_office1 = Server(env, "office-1", capacity=1, service_rate=service_rate)
 ticket_office2 = Server(env, "office-2", capacity=1, service_rate=service_rate)
 ticket_offices = [ticket_office1, ticket_office2]
-env.process(passenger_generator(env, ticket_offices, arrival_rate))
+env.process(Passenger_generator(env, ticket_offices, arrival_rate))
 env.run(until=SIMULATION_END_TIME)

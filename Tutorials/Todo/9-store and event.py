@@ -27,12 +27,12 @@ class Server(object):
         return random.expovariate(self.service_rate) + 0.1
 
 
-# passenger - Entity Process
-# Describe how passenger performs at the station
+# Passenger - Entity Process
+# Describe how Passenger performs at the station
 # - 80% buy tickets from machine, 20% buy from office
 # - after bought tickets, go to the gate
 # - wait until the train arrives and broad the train
-def passenger(env, name, ticket_machine, ticket_office, gate):
+def Passenger(env, name, ticket_machine, ticket_office, gate):
     print("[{:6.2f}:{}] - arrive at the station".format(env.now, name))
 
     # 80% of passengers go to ticket machine with 2 machines
@@ -107,12 +107,12 @@ def passenger(env, name, ticket_machine, ticket_office, gate):
 
 
 # generator - Supporting Process
-# Create new passenger and then sleep for random amount of time
-def passenger_generator(env, ticket_machine, ticket_office, gate, arrival_rate):
+# Create new Passenger and then sleep for random amount of time
+def Passenger_generator(env, ticket_machine, ticket_office, gate, arrival_rate):
     i = 0
     while True:
         ename = "Passenger#{}".format(i)
-        env.process(passenger(env, ename, ticket_machine, ticket_office, gate))
+        env.process(Passenger(env, ename, ticket_machine, ticket_office, gate))
         next_entity_arrival = random.expovariate(arrival_rate)
         yield env.timeout(next_entity_arrival)
         i += 1
@@ -128,9 +128,9 @@ def train(env, on_board, remaining, platform):
     if n_pax_wait < remaining:
         remaining = n_pax_wait
     for i in range(remaining):
-        passenger_ev = yield platform.get()
-        # inform the passenger to board the train
-        passenger_ev.succeed()
+        Passenger_ev = yield platform.get()
+        # inform the Passenger to board the train
+        Passenger_ev.succeed()
         on_board += 1
 
     yield env.timeout(0.1)
@@ -170,6 +170,6 @@ ticket_office = Server(env, "ticket_office", 1, to_service_rate)
 ticket_machine = Server(env, "ticket_machine", 2, tm_service_rate)
 gate = Server(env, "gate", 1, ga_service_rate)
 platform = simpy.Store(env, capacity=1000)
-env.process(passenger_generator(env, ticket_machine, ticket_office, gate, arrival_rate))
+env.process(Passenger_generator(env, ticket_machine, ticket_office, gate, arrival_rate))
 env.process(train_generator(env, TRAIN_INTERVAL, TRAIN_CAPACITY, platform))
 env.run(until=SIMULATION_END_TIME)

@@ -1,0 +1,5 @@
+Learn simpy coding - basic code structure!
+Be confident in solving the endsem questions!
+Solve a large number of simpy questions!
+
+""" Practice makes a man perfect """

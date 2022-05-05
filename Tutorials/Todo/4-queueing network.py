@@ -5,6 +5,7 @@ import simpy
 # Generic helper class to hold information regarding to resource
 # This simplifies how we pass information from main program to entity process
 
+
 class Server(object):
     def __init__(self, env, name, capacity, service_rate):
         self.name = name
@@ -24,12 +25,12 @@ class Server(object):
         return random.expovariate(self.service_rate)
 
 
-# passenger - Entity Process
-# Describe how passenger performs at the ticket office
-def passenger(env, name, ticket_office, gate):
+# Passenger - Entity Process
+# Describe how Passenger performs at the ticket office
+def Passenger(env, name, ticket_office, gate):
     print("[{:6.2f}:{}] - arrive at the station".format(env.now, name))
 
-    # a passenger first buys a ticket from ticket office
+    # a Passenger first buys a ticket from ticket office
     t_arrival = env.now
     print("[{:6.2f}:{}] - join queue at ticket office".format(t_arrival, name))
     ticket_office.print_stats()
@@ -73,12 +74,12 @@ def passenger(env, name, ticket_office, gate):
 
 
 # generator - Supporting Process
-# Create new passenger and then sleep for random amount of time
-def passenger_generator(env, ticket_office, gate, arrival_rate):
+# Create new Passenger and then sleep for random amount of time
+def Passenger_generator(env, ticket_office, gate, arrival_rate):
     i = 0
     while True:
         ename = "Passenger#{}".format(i)
-        env.process(passenger(env, ename, ticket_office, gate))
+        env.process(Passenger(env, ename, ticket_office, gate))
         next_entity_arrival = random.expovariate(arrival_rate)
         yield env.timeout(next_entity_arrival)
         i += 1
@@ -99,5 +100,5 @@ env = simpy.Environment()
 ticket_office = Server(env, "ticket_office", 1, to_service_rate)
 gate = Server(env, "gate", 1, ga_service_rate)
 
-env.process(passenger_generator(env, ticket_office, gate, arrival_rate))
+env.process(Passenger_generator(env, ticket_office, gate, arrival_rate))
 env.run(until=SIMULATION_END_TIME)

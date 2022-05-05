@@ -32,13 +32,13 @@ class Server(object):
         return len(self.resource.queue) < self.queue_limit
 
 
-# passenger - Entity Process
-# Describe how passenger performs at the ticket office
-def passenger(env, name, server, wait_limit):
+# Passenger - Entity Process
+# Describe how Passenger performs at the ticket office
+def Passenger(env, name, server, wait_limit):
     print("[{:6.2f}:{}] - arrive at the station".format(env.now, name))
     server.print_stats()
     if not server.is_available_spaces():
-        # queue is full, passenger does not join the queue --> balking
+        # queue is full, Passenger does not join the queue --> balking
         print("\t[{}] - queue is full, not enter the queue".format(name))
     else:
         # some spaces left, join the queue
@@ -70,12 +70,12 @@ def passenger(env, name, server, wait_limit):
 
 
 # generator - Supporting Process
-# Create new passenger and then sleep for random amount of time
-def passenger_generator(env, server, arrival_rate, wait_limit):
+# Create new Passenger and then sleep for random amount of time
+def Passenger_generator(env, server, arrival_rate, wait_limit):
     i = 0
     while True:
         ename = "Passenger#{}".format(i)
-        env.process(passenger(env, ename, server, wait_limit))
+        env.process(Passenger(env, ename, server, wait_limit))
         next_entity_arrival = random.expovariate(arrival_rate)
         yield env.timeout(next_entity_arrival)
         i += 1
@@ -95,5 +95,5 @@ env = simpy.Environment()
 ticket_office = Server(
     env, "office", capacity=1, service_rate=service_rate, queue_limit=QUEUE_LIMIT
 )
-env.process(passenger_generator(env, ticket_office, arrival_rate, WAIT_LIMIT))
+env.process(Passenger_generator(env, ticket_office, arrival_rate, WAIT_LIMIT))
 env.run(until=SIMULATION_END_TIME)

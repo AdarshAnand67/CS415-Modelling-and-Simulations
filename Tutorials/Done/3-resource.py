@@ -2,14 +2,14 @@ import math
 import random
 import simpy
 
-# passenger - Entity Process
-# Describe how passenger performs at the ticket office
+# Passenger - Entity Process
+# Describe how Passenger performs at the ticket office
 
 
-def passenger(env, name, server, service_rate):
+def Passenger(env, name, server, service_rate):
     """
-        A passenger process that requests a ticket from the ticket office
-        
+        A Passenger process that requests a ticket from the ticket office
+
         env: simpy.Environment
         name: str
         server: simpy.Resource
@@ -22,17 +22,20 @@ def passenger(env, name, server, service_rate):
         print(f"[{env.now:6.2f}:{name}] - Request ticket")
 
         service_time = random.expovariate(service_rate)  # Generate service time
-        
+
         yield env.timeout(service_time)
 
         print(f"[{env.now:6.2f}:{name}] - End ticket")
 
+
 # generator - Supporting Process
-# Create new passenger and then sleep for random amount of time
-def passenger_generator(env, server, arrival_rate, service_rate):
+# Create new Passenger and then sleep for random amount of time
+
+
+def Passenger_generator(env, server, arrival_rate, service_rate):
     """ 
         A process that creates new passengers and then sleeps for random amount of time
-        
+
         env: simpy.Environment
         server: simpy.Resource
         arrival_rate: float
@@ -43,8 +46,8 @@ def passenger_generator(env, server, arrival_rate, service_rate):
         current_person = f"Passenger #{i}"
 
         env.process(
-            passenger(env, current_person, server, service_rate)
-        )  # Run passenger process in env
+            Passenger(env, current_person, server, service_rate)
+        )  # Run Passenger process in env
 
         next_entity_arrival = random.expovariate(
             arrival_rate
@@ -66,5 +69,5 @@ env = simpy.Environment()  # Creating a simpy environment
 ticket_office = simpy.Resource(env, capacity=1)
 # Creating a resource with capacity 1 (one ticket at a time)
 
-env.process(passenger_generator(env, ticket_office, arrival_rate, service_rate))
+env.process(Passenger_generator(env, ticket_office, arrival_rate, service_rate))
 env.run(until=SIMULATION_END_TIME)
