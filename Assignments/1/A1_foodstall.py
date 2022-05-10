@@ -106,7 +106,8 @@ def customer_arrival(env, seats):
         if (
             env.now < 1 * 60 or env.now > 5 * 60
         ):  # If it is between 8am-9am or after 1pm
-            inter_arrival_time = random.uniform(RUSH_HOUR_T_MIN, RUSH_HOUR_T_MAX)
+            inter_arrival_time = random.uniform(
+                RUSH_HOUR_T_MIN, RUSH_HOUR_T_MAX)
         else:  # If it is after 10 am
             inter_arrival_time = random.uniform(
                 NON_RUSH_HOUR_T_MIN, NON_RUSH_HOUR_T_MAX

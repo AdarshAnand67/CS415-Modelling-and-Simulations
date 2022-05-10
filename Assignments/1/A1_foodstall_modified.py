@@ -65,7 +65,8 @@ def customer_arrival(env, seats):
         if (
             env.now < 1 * 60 or env.now > 5 * 60
         ):  # If it is between 8am-9am or after 1pm ie Rush hour
-            inter_arrival_time = random.uniform(RUSH_HOUR_T_MIN, RUSH_HOUR_T_MAX)
+            inter_arrival_time = random.uniform(
+                RUSH_HOUR_T_MIN, RUSH_HOUR_T_MAX)
 
         else:  # If it is after 10 am ie non-Rush hour
             inter_arrival_time = random.uniform(
@@ -103,7 +104,8 @@ def customer(env, name, seats):
         seats.release(my_seat)
 
         print(
-            "SIM_TIME=%5.2f Customer %d left the stall after eating. " % (env.now, name)
+            "SIM_TIME=%5.2f Customer %d left the stall after eating. " % (
+                env.now, name)
         )
         num_customers += 1
         num_customers_served += 1
@@ -142,7 +144,6 @@ for TOTAL_NUM_SEATS in range(1, 51):
         env.process(customer_arrival(env, seats))
 
         # Start the simulation
-        # simulate for WORKING_HOURS*60 minutes
         env.run(until=WORKING_HOURS * 60)
 
         # Print results
