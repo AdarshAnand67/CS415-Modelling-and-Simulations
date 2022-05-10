@@ -1,0 +1,33 @@
+# SimPy example that illustrates events
+# Source: https://simpy.readthedocs.io/en/latest/topical_guides/events.html
+
+
+import simpy
+
+class School:
+	def __init__(self, env):
+		self.env = env
+		self.class_ends = env.event()
+		self.bell_proc = env.process(self.bell())
+		self.pupil_procs = [env.process(self.pupil()) for i in range(3)]
+
+	def bell(self):
+		for i in range(2):
+			print("TIME=",env.now,end='')
+			yield self.env.timeout(45)
+			self.class_ends.succeed()
+			self.class_ends = self.env.event()
+			print()
+
+	def pupil(self):
+		
+		for i in range(2):
+			print(r' \o/', end='')
+			yield self.class_ends
+
+
+
+env=simpy.Environment()
+school = School(env)
+env.run(until=100)
+
