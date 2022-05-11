@@ -1,3 +1,4 @@
+import simpy
 class GasStation:
     def __init__(self, env):
         self.fuel_dispensers = simpy.Resource(env, capacity=2)

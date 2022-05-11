@@ -1,3 +1,4 @@
+import simpy
 def resource_user(name, env, resource, wait, prio):
     yield env.timeout(wait)
     with resource.request(priority=prio) as req:

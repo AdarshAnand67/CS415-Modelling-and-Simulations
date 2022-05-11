@@ -1,3 +1,4 @@
+import simpy
 def producer(env, store):
     for i in range(100):
         yield env.timeout(2)

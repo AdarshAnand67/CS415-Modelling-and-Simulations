@@ -1,3 +1,4 @@
+import simpy
 env = simpy.Environment()
 issues = simpy.PriorityStore(env)
 

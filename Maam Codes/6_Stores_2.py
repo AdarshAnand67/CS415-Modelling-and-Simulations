@@ -1,5 +1,5 @@
 from collections import namedtuple
-
+import simpy
 Machine = namedtuple('Machine', 'size, duration')
 m1 = Machine(1, 2)  # Small and slow
 m2 = Machine(2, 1)  # Big and fast

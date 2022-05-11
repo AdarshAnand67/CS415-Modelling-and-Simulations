@@ -51,7 +51,7 @@ def Power_Toggle(env):
         print(f"🌕 Power is on at {env.now} minutes")
         yield env.timeout(random.randint(60, 2 * 60))
         POWER_DOWN_EVENT.succeed()  # Power is down now
-        POWER_UP_EVENT = simpy.Event(env)
+        POWER_UP_EVENT = simpy.Event(env) # Create a new event
         NUMBER_OF_POWER_CUTS += 1
 
         print(f"🌑 Power is off at {env.now} minutes")
@@ -84,9 +84,6 @@ class Student:
             env : simpy.Environment
             id : int
             SLEEP_PROBABILITY : float
-
-        Returns :
-            simpy.Process
     """
 
     def __init__(self, env, id, SLEEP_PROBABILITY):
@@ -103,10 +100,7 @@ class Student:
         """ Modelling a Student behavior """
 
         # counter for the number of students that finished the assignment on time
-        global NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT
-        global NUMBER_OF_POWER_CUTS
-        global TIME_TAKEN_TO_SUBMIT
-        global COUNTER_STUDENT_ENVIRONMENT
+        global NUMBER_OF_STUDENTS_FINISHED_ASSIGNMENT, COUNTER_STUDENT_ENVIRONMENT, TIME_TAKEN_TO_SUBMIT,NUMBER_OF_POWER_CUTS
 
         print(
             f"TIME={self.env.now} - 🙂 Student #{self.id} started working.Work left={self.REQD_WORK} minutes"
@@ -129,13 +123,13 @@ class Student:
 
                 if COUNTER_STUDENT_ENVIRONMENT == NUMBER_OF_STUDENTS:
                     # If all students finished the assignment on time
-                    ALL_FINISHED.succeed()
+                    ALL_FINISHED.succeed() # All students finished the assignment on time stop the simulation
 
                 return
 
             else:  # Power cut event
                 # deduct the time taken by the student to complete the work
-                self.REQD_WORK -= self.env.now - START_TIME
+                self.REQD_WORK -= (self.env.now - START_TIME)
 
                 print(
                     f"TIME={self.env.now} - 😓 Student #{self.id} interrupted by power cut. Task remaining={self.REQD_WORK} minutes"
@@ -168,9 +162,7 @@ class Student:
 """ Main simpy function code """
 env = simpy.Environment()  # create the environment
 
-# Event that is triggered when power is cut
 POWER_DOWN_EVENT = simpy.Event(env)
-# Event that is triggered when power is back on
 POWER_UP_EVENT = simpy.Event(env)
 
 Power_Toggle_process = env.process(Power_Toggle(env))  # power toggle process
@@ -178,8 +170,8 @@ Time_Duration_process = env.process(timeduration(env))  # time duration process
 Student_process = []  # list of student processes
 
 for id in range(NUMBER_OF_STUDENTS):
-    Student_obj = Student(env, id, SLEEP_PROBABILITY)
-    Student_process.append(Student_obj.behavior_process)
+    Student_obj = Student(env, id, SLEEP_PROBABILITY) 
+    Student_process.append(Student_obj.behavior_process) 
 
 # Event that is triggered when all students finished the assignment
 ALL_FINISHED = simpy.Event(env)
